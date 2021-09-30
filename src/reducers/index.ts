@@ -11,9 +11,14 @@ export type StateType = {
 type Action =
   | { type: "LOADING" }
   | { type: "ERROR"; error: ApolloError | undefined }
-  | { type: "SET_BUILDINGS"; payload: BuildingsType }
-  | { type: "SET_ROOMS"; payload: RoomsType }
-  | { type: "SET_MEETINGS"; payload: MeetingsType };
+  | {
+      type: "SET_DATA";
+      payload: {
+        buildings: BuildingsType;
+        rooms: RoomsType;
+        meetings: MeetingsType;
+      };
+    };
 
 export const initDataStructure = {
   contents: [],
@@ -35,26 +40,12 @@ export default function reducer(
       return { ...state, loading: true, error: undefined };
     case "ERROR":
       return { ...state, loading: false, error: action.error };
-    case "SET_BUILDINGS":
+    case "SET_DATA":
       return {
         ...state,
         loading: false,
         error: undefined,
-        buildings: action.payload,
-      };
-    case "SET_ROOMS":
-      return {
-        ...state,
-        loading: false,
-        error: undefined,
-        rooms: action.payload,
-      };
-    case "SET_MEETINGS":
-      return {
-        ...state,
-        loading: false,
-        error: undefined,
-        meetings: action.payload,
+        ...action.payload,
       };
     default:
       return state;

@@ -59,7 +59,7 @@ export const SmartMeetingsProvider = ({ children }: Props) => {
                       contents: [...acc.contents, meeting.id],
                       data: {
                         ...acc.data,
-                        [id]: {
+                        [meeting.id]: {
                           ...meeting,
                         },
                       },
@@ -101,18 +101,12 @@ export const SmartMeetingsProvider = ({ children }: Props) => {
           /** construct buildings end */
 
           dispatch({
-            type: "SET_BUILDINGS",
-            payload: buildings,
-          });
-
-          dispatch({
-            type: "SET_ROOMS",
-            payload: rooms,
-          });
-
-          dispatch({
-            type: "SET_MEETINGS",
-            payload: meetings,
+            type: "SET_DATA",
+            payload: {
+              buildings,
+              rooms,
+              meetings,
+            },
           });
         }
       }
