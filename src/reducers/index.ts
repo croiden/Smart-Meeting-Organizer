@@ -7,6 +7,8 @@ export type StateType = {
   meetings: MeetingsType;
   loading: boolean;
   error?: ApolloError | undefined;
+  largestMeetingId: number;
+  updateLargestMeetingId?: (val: number) => void;
 };
 type Action =
   | { type: "LOADING" }
@@ -18,6 +20,10 @@ type Action =
         rooms: RoomsType;
         meetings: MeetingsType;
       };
+    }
+  | {
+      type: "UPDATE_LARGEST_MEETING_ID";
+      payload: number;
     };
 
 export const initDataStructure = {
@@ -28,7 +34,8 @@ export const initialState: StateType = {
   buildings: initDataStructure,
   rooms: initDataStructure,
   meetings: initDataStructure,
-  loading: false,
+  loading: true,
+  largestMeetingId: 0,
 };
 
 export default function reducer(
@@ -46,6 +53,11 @@ export default function reducer(
         loading: false,
         error: undefined,
         ...action.payload,
+      };
+    case "UPDATE_LARGEST_MEETING_ID":
+      return {
+        ...state,
+        largestMeetingId: action.payload,
       };
     default:
       return state;

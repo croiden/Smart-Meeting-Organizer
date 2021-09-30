@@ -46,6 +46,7 @@ export const SmartMeetingsProvider = ({ children }: Props) => {
 
           let meetings: MeetingsType = initDataStructure;
           let rooms: RoomsType = initDataStructure;
+          let largestMeetingId = 0;
 
           /** construct buildings start */
           const buildings: BuildingsType = Buildings.reduce(
@@ -55,6 +56,7 @@ export const SmartMeetingsProvider = ({ children }: Props) => {
                 (acc, { id, name, floor, meetings: bMeetings }) => {
                   /** construct meetings start */
                   meetings = bMeetings.reduce((acc, meeting) => {
+                    largestMeetingId = Math.max(largestMeetingId, meeting.id);
                     return {
                       contents: [...acc.contents, meeting.id],
                       data: {
@@ -108,6 +110,7 @@ export const SmartMeetingsProvider = ({ children }: Props) => {
               meetings,
             },
           });
+          updateLargestMeetingId(largestMeetingId);
         }
       }
     }
@@ -118,7 +121,14 @@ export const SmartMeetingsProvider = ({ children }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const value = { ...state };
+  const updateLargestMeetingId = (largestMeetingId: number) => {
+    dispatch({
+      type: "UPDATE_LARGEST_MEETING_ID",
+      payload: largestMeetingId,
+    });
+  };
+
+  const value = { ...state, updateLargestMeetingId };
   return (
     <SmartMeetingsContext.Provider value={value}>
       {children}
