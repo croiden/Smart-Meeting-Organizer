@@ -20,3 +20,26 @@ export const FETCH_ALL_DATA = gql`
     }
   }
 `;
+
+export const CREATE_MEETING = gql`
+  mutation createMeeting(
+    $id: Int!
+    $title: String!
+    $date: String!
+    $startTime: String!
+    $endTime: String!
+    $meetingRoomId: Int!
+  ) {
+    Meeting(
+      id: $id
+      title: $title
+      date: $date
+      startTime: $startTime
+      endTime: $endTime
+      meetingRoomId: $meetingRoomId
+    ) {
+      id
+      title
+    }
+  }
+`;
