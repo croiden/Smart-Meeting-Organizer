@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useHistory } from "react-router-dom";
+
 import { SmartMeetingsContext } from "../context";
 import {
   getTodaysMeetings,
@@ -13,6 +15,8 @@ const Main = () => {
   const [noOfFreeRooms, setNoOfFreeRooms] = React.useState(0);
   const [noOfTodaysMeetings, setNoOfTodaysMeetings] = React.useState(0);
   const [noOfOngoingMeetings, setNoOfOngoingMeetings] = React.useState(0);
+
+  const history = useHistory();
 
   React.useEffect(() => {
     function calculateNumbers() {
@@ -42,6 +46,10 @@ const Main = () => {
       clearInterval(timer);
     };
   }, [meetings, rooms]);
+
+  const handleAddMeeting = () => {
+    history.push("/add-meeting");
+  };
 
   if (error) {
     return <div>{"Error occurred..."}</div>;
@@ -75,7 +83,7 @@ const Main = () => {
           {"Total"} {noOfOngoingMeetings} {"going on now"}
         </p>
       </div>
-      <button>{"Add a Meeting"}</button>
+      <button onClick={handleAddMeeting}>{"Add a Meeting"}</button>
     </div>
   );
 };
