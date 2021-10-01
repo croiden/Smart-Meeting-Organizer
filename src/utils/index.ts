@@ -67,3 +67,9 @@ export const isRoomAvailable = (
 
 const getTimeStamp = (date: string, time: string) =>
   moment(`${date} ${time}`, `${DATE_FORMAT} ${TIME_FORMAT}`).valueOf();
+
+export const isEndTimeLessThanStartTime = (
+  date: string,
+  startTime: string,
+  endTime: string
+) => getTimeStamp(date, startTime) > getTimeStamp(date, endTime);

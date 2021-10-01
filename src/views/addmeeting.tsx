@@ -1,11 +1,40 @@
 import * as React from "react";
 import moment from "moment";
 import { useMutation } from "@apollo/client";
+import styled from "styled-components";
 
 import { SmartMeetingsContext } from "../context";
 import FreeRooms from "./freerooms";
-import { DATE_FORMAT } from "../utils";
+import { DATE_FORMAT, isEndTimeLessThanStartTime } from "../utils";
 import { CREATE_MEETING } from "../graphql/queries";
+import { StyledButton, Field } from "../styles";
+
+const ChooseRooms = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: 1px solid #c3c3c3;
+`;
+const StyledH2 = styled.h2`
+  text-align: center;
+`;
+const SuccessMessage = styled.div`
+  div {
+    margin: 10px;
+  }
+  a {
+    padding: 10px;
+  }
+`;
+
+const StyledSecondaryButton = styled(StyledButton)`
+  background: #5b5b5c;
+  color: #ffffff;
+  border-radius: 8px;
+  &:hover {
+    background: #343435;
+  }
+`;
 
 const AddMeeting = () => {
   const { buildings, largestMeetingId, updateLargestMeetingId } =
@@ -39,7 +68,18 @@ const AddMeeting = () => {
         endTime: elements[3].value,
         buildingId: elements[4].value,
       };
-      setFormData(formData);
+      if (
+        isEndTimeLessThanStartTime(
+          formData.date,
+          formData.startTime,
+          formData.endTime
+        )
+      ) {
+        alert("End time should be greater than start time");
+      } else {
+        setFormData(formData);
+        setMeetingRoomId(null);
+      }
     }
     return false;
   };
@@ -67,18 +107,18 @@ const AddMeeting = () => {
   return meetingErrorData ? (
     <div>{`Error occurred while creating meeting`}</div>
   ) : meetingSuccessData ? (
-    <>
-      <div>{"Meeting created successfully"}</div>
+    <SuccessMessage>
+      <h3>{"Meeting created successfully"}</h3>
       <div>
         <a href="/">{"Go to Home"}</a>|
         <a href="/add-meeting">{"Add Meeting"}</a>
       </div>
-    </>
+    </SuccessMessage>
   ) : (
     <>
       <form onSubmit={handleFormSubmit}>
-        <h1>{"Add Meeting"}</h1>
-        <div>
+        <StyledH2>{"Add Meeting"}</StyledH2>
+        <Field>
           <label htmlFor="meeting-title">{"Title:"}</label>
           <input
             type="text"
@@ -87,30 +127,38 @@ const AddMeeting = () => {
             required
             placeholder={"Add meeting title"}
           />
-        </div>
-        <div>
+        </Field>
+        <Field>
           <label htmlFor="meeting-date">{"Date:"}</label>
-          <input type="date" id="meeting-date" name="meeting-date" required />
-        </div>
-        <div>
+          <input
+            type="date"
+            id="meeting-date"
+            name="meeting-date"
+            required
+            defaultValue={moment().format("YYYY-MM-DD")}
+          />
+        </Field>
+        <Field>
           <label htmlFor="meeting-start-time">{"Start Time:"}</label>
           <input
             type="time"
             id="meeting-start-time"
             name="meeting-start-time"
             required
+            defaultValue={moment().format("hh:mm")}
           />
-        </div>
-        <div>
+        </Field>
+        <Field>
           <label htmlFor="meeting-end-time">{"End Time:"}</label>
           <input
             type="time"
             id="meeting-end-time"
             name="meeting-end-time"
             required
+            defaultValue={moment().add(1, "hours").format("hh:mm")}
           />
-        </div>
-        <div>
+        </Field>
+        <Field>
           <label htmlFor="meeting-buildings">{"Select Building:"}</label>
           <select name="meeting-buildings" id="meeting-buildings" required>
             <option value="">{"None"}</option>
@@ -123,20 +171,26 @@ const AddMeeting = () => {
               );
             })}
           </select>
-        </div>
-        <button type="submit">{formData ? "Refresh" : "Next"}</button>
+        </Field>
+        <StyledSecondaryButton type="submit">
+          {formData ? "Refresh Rooms" : "Next"}
+        </StyledSecondaryButton>
       </form>
       {formData ? (
-        <>
-          <FreeRooms {...formData} onRooomSelect={handleRoomSelect} />
-          <button
+        <ChooseRooms>
+          <FreeRooms
+            {...formData}
+            onRooomSelect={handleRoomSelect}
+            meetingRoomId={meetingRoomId}
+          />
+          <StyledButton
             type="submit"
             disabled={!meetingRoomId || creatingMeeting}
             onClick={handleSave}
           >
-            {"Save"}
-          </button>
-        </>
+            {"Create Meeting"}
+          </StyledButton>
+        </ChooseRooms>
       ) : null}
     </>
   );

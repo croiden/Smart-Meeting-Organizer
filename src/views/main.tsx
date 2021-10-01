@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
 
 import { SmartMeetingsContext } from "../context";
 import {
@@ -7,6 +8,17 @@ import {
   getOngoingMeetings,
   getFreeRoomsNow,
 } from "../utils";
+import { StyledButton } from "../styles";
+
+const Container = styled.div`
+  width: 100%;
+`;
+const Row = styled.div`
+  width: 100%;
+  padding: 10px;
+  border-bottom: 1px solid #d0d0d0;
+  text-align: left;
+`;
 
 const Main = () => {
   const { loading, error, buildings, rooms, meetings } =
@@ -54,37 +66,34 @@ const Main = () => {
   if (error) {
     return <div>{"Error occurred..."}</div>;
   }
-  if (loading) {
-    return <div>{"Loading... Please wait..."}</div>;
-  }
   return (
-    <div>
-      <div>
-        <h1>{"Buildings"}</h1>
+    <Container>
+      <Row>
+        <h2>{"Buildings"}</h2>
         <p>
-          {"Total"} {buildings.contents.length}
+          {"Total"} {loading ? "..." : buildings.contents.length}
         </p>
-      </div>
-      <div>
-        <h1>{"Rooms"}</h1>
+      </Row>
+      <Row>
+        <h2>{"Rooms"}</h2>
         <p>
-          {"Total"} {rooms.contents.length}
-        </p>
-        <p>
-          {"Free Now"} {noOfFreeRooms}
-        </p>
-      </div>
-      <div>
-        <h1>{"Meetings"}</h1>
-        <p>
-          {"Total"} {noOfTodaysMeetings} {"Today"}
+          {"Total"} {loading ? "..." : rooms.contents.length}
         </p>
         <p>
-          {"Total"} {noOfOngoingMeetings} {"going on now"}
+          {"Free Now"} {loading ? "..." : noOfFreeRooms}
         </p>
-      </div>
-      <button onClick={handleAddMeeting}>{"Add a Meeting"}</button>
-    </div>
+      </Row>
+      <Row>
+        <h2>{"Meetings"}</h2>
+        <p>
+          {"Total"} {loading ? "..." : noOfTodaysMeetings} {"Today"}
+        </p>
+        <p>
+          {"Total"} {loading ? "..." : noOfOngoingMeetings} {"going on now"}
+        </p>
+      </Row>
+      <StyledButton onClick={handleAddMeeting}>{"Add a Meeting"}</StyledButton>
+    </Container>
   );
 };
 
