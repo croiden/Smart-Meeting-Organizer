@@ -58,8 +58,8 @@ export const isRoomAvailable = (
     const endTimeStamp = getTimeStamp(date, endTime);
 
     return (
-      meetingStartTimeStamp <= endTimeStamp &&
-      meetingEndTimeStamp >= startTimeStamp
+      meetingStartTimeStamp < endTimeStamp &&
+      meetingEndTimeStamp > startTimeStamp
     );
   });
   return meetingsDuringTheSameTime.length === 0 ? true : false;
