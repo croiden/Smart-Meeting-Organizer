@@ -1,12 +1,15 @@
 import * as React from "react";
 import moment from "moment";
+import { useMutation } from "@apollo/client";
 
 import { SmartMeetingsContext } from "../context";
 import FreeRooms from "./freerooms";
 import { DATE_FORMAT } from "../utils";
+import { CREATE_MEETING } from "../graphql/queries";
 
 const AddMeeting = () => {
-  const { buildings } = React.useContext(SmartMeetingsContext);
+  const { buildings, largestMeetingId, updateLargestMeetingId } =
+    React.useContext(SmartMeetingsContext);
   const [formData, setFormData] = React.useState<null | {
     title: string;
     date: string;
@@ -14,6 +17,16 @@ const AddMeeting = () => {
     endTime: string;
     buildingId: number;
   }>(null);
+  const [meetingRoomId, setMeetingRoomId] = React.useState<number | null>(null);
+
+  const [
+    createMeeting,
+    {
+      data: meetingSuccessData,
+      loading: creatingMeeting,
+      error: meetingErrorData,
+    },
+  ] = useMutation(CREATE_MEETING);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,7 +43,38 @@ const AddMeeting = () => {
     }
     return false;
   };
-  return (
+
+  const handleSave = () => {
+    if (formData) {
+      const { title, date, startTime, endTime } = formData;
+      createMeeting({
+        variables: {
+          id: largestMeetingId + 1,
+          title,
+          date,
+          startTime,
+          endTime,
+          meetingRoomId,
+        },
+      });
+      updateLargestMeetingId && updateLargestMeetingId(largestMeetingId + 1);
+    }
+  };
+  const handleRoomSelect = (roomId: number) => {
+    setMeetingRoomId(roomId);
+  };
+
+  return meetingErrorData ? (
+    <div>{`Error occurred while creating meeting`}</div>
+  ) : meetingSuccessData ? (
+    <>
+      <div>{"Meeting created successfully"}</div>
+      <div>
+        <a href="/">{"Go to Home"}</a>|
+        <a href="/add-meeting">{"Add Meeting"}</a>
+      </div>
+    </>
+  ) : (
     <>
       <form onSubmit={handleFormSubmit}>
         <h1>{"Add Meeting"}</h1>
@@ -82,7 +126,18 @@ const AddMeeting = () => {
         </div>
         <button type="submit">{formData ? "Refresh" : "Next"}</button>
       </form>
-      {formData ? <FreeRooms {...formData} /> : null}
+      {formData ? (
+        <>
+          <FreeRooms {...formData} onRooomSelect={handleRoomSelect} />
+          <button
+            type="submit"
+            disabled={!meetingRoomId || creatingMeeting}
+            onClick={handleSave}
+          >
+            {"Save"}
+          </button>
+        </>
+      ) : null}
     </>
   );
 };
