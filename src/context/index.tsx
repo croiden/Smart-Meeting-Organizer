@@ -35,7 +35,6 @@ export const SmartMeetingsProvider = ({ children }: Props) => {
         query: FETCH_ALL_DATA,
       });
       if (!ignore) {
-        console.log(data);
         if (error) {
           dispatch({
             type: "ERROR",

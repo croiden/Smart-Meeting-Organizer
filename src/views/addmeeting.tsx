@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { SmartMeetingsContext } from "../context";
 import FreeRooms from "./freerooms";
-import { DATE_FORMAT, isEndTimeLessThanStartTime } from "../utils";
+import { DATE_FORMAT, isEndTimeLessThanStartTime, TIME_FORMAT } from "../utils";
 import { CREATE_MEETING } from "../graphql/queries";
 import { StyledButton, Field } from "../styles";
 
@@ -145,7 +145,7 @@ const AddMeeting = () => {
             id="meeting-start-time"
             name="meeting-start-time"
             required
-            defaultValue={moment().format("hh:mm")}
+            defaultValue={moment().format(TIME_FORMAT)}
           />
         </Field>
         <Field>
@@ -155,7 +155,7 @@ const AddMeeting = () => {
             id="meeting-end-time"
             name="meeting-end-time"
             required
-            defaultValue={moment().add(1, "hours").format("hh:mm")}
+            defaultValue={moment().add(1, "hours").format(TIME_FORMAT)}
           />
         </Field>
         <Field>

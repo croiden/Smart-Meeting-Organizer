@@ -2,7 +2,7 @@ import { MeetingsType, RoomsType, RoomType } from "../types";
 import moment from "moment";
 
 export const DATE_FORMAT = "DD/MM/YYYY";
-export const TIME_FORMAT = "hh:mm";
+export const TIME_FORMAT = "HH:mm";
 export const getTodaysMeetings = (meetings: MeetingsType) => {
   const { contents, data } = meetings;
   const today = moment().format(DATE_FORMAT);
