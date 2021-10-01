@@ -43,6 +43,11 @@ const NoRooms = styled.div`
   color: grey;
 `;
 
+const RowContainer = styled.div`
+  max-height: 500px;
+  overflow: auto;
+`;
+
 type Props = {
   title: string;
   date: string;
@@ -74,24 +79,26 @@ const FreeRooms = ({
       {availableRooms.length === 0 ? (
         <NoRooms>{"No meeting rooms available"}</NoRooms>
       ) : null}
-      {availableRooms.map((roomId) => {
-        const { id, name, floor } = rooms.data[roomId];
-        return (
-          <StyledButtonRow
-            key={id}
-            onClick={() => {
-              onRooomSelect(id);
-            }}
-            selected={meetingRoomId === id}
-          >
-            <h3>{name}</h3>
-            <div>{building.name}</div>
-            <div>
-              {"Floor"} {floor}
-            </div>
-          </StyledButtonRow>
-        );
-      })}
+      <RowContainer>
+        {availableRooms.map((roomId) => {
+          const { id, name, floor } = rooms.data[roomId];
+          return (
+            <StyledButtonRow
+              key={id}
+              onClick={() => {
+                onRooomSelect(id);
+              }}
+              selected={meetingRoomId === id}
+            >
+              <h3>{name}</h3>
+              <div>{building.name}</div>
+              <div>
+                {"Floor"} {floor}
+              </div>
+            </StyledButtonRow>
+          );
+        })}
+      </RowContainer>
     </Container>
   );
 };
