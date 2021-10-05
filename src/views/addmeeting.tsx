@@ -136,6 +136,7 @@ const AddMeeting = () => {
             name="meeting-date"
             required
             defaultValue={moment().format("YYYY-MM-DD")}
+            min={moment().format("YYYY-MM-DD")}
           />
         </Field>
         <Field>
